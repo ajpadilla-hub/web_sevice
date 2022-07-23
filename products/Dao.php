@@ -1,90 +1,87 @@
 <?php
-class ProductDto
+require_once('./config/database.php');
+require_once('./objects/product.php');
+class ProductDao
 {
-
-
-    private $conn;
     public function __construct()
     {
-        $this->conn = DBConexion::getInstance();
+        header('Content-Type: application/json; charset=utf-8');
+        DBConexion::getInstance();
     }
-
-
-
-    public function create(Product $product)
-    {
-        $sql = "INSERT INTO products
-        ( `name`, `description`, `price`, `created`, `modified`)
-        VALUES (
-        '$product->getName('name')',
-        `$product->getDescription('description')',
-        '$product->getPrice('price')',
-        '$product->getCreated('created')',
-        '$product->getModified('modified')') ";
-
-        $st = $this->conn->prepare($sql);
-        $st->execute();
-    }
-
-
     public function read()
     {
+        header('Content-Type: application/json; charset=utf-8');
         $sql = 'SELECT * FROM products LIMIT 10';
-        $st = $this->conn->prepare($sql);
-        $st->execute();
 
+        $st = DBConexion::execute($sql);
         $productList = [];
 
         while ($row = $st->fetch()) {
 
-            $product = new Product();
-            $product->setCategory_id($row['id']);
-            $product->setName($row['name']);
-            $product->setDescription($row['description']);
-            $product->setPrice($row['price']);
-            $product->setCreated($row['created']);
-            $product->setModified($row['modified']);
+            $product = new Product(
+                $row['category_id'],
+                $row['name'],
+                $row['description'],
+                $row['price'],
+                $row['created'],
+                $row['modified'],
+                $row['id']
 
+            );
             $productList[] = $product;
-            print_r($product);
         }
-        return $productList;
+        echo json_encode($productList);
     }
-
-
-    public function update($id)
-    {
-        $sql = "DELETE FROM `products` WHERE id=$id";
-        $st = $this->conn->prepare($sql);
-        $st->execute();
-    }
-
-
 
     public function readOne(int $id)
     {
         $sql = "SELECT * FROM products WHERE id = $id";
-        $st = $this->conn->prepare($sql);
-        $st->execute();
-
-        $row = $st->fetchAll();
-
-        $product = new Product();
-        $product->setCategory_id($row['id']);
-        $product->setName($row['name']);
-        $product->setDescription($row['description']);
-        $product->setPrice($row['price']);
-        $product->setCreated($row['created']);
-        $product->setModified($row['modified']);
-
-        return $product;
+        $st = DBConexion::execute($sql);
+        $row = $st->fetch();
+        $product = new Product(
+            $row['category_id'],
+            $row['name'],
+            $row['description'],
+            $row['price'],
+            $row['created'],
+            $row['modified'],
+            $row['id']
+        );
+        echo json_encode($product);
     }
-
 
     public function delete($id)
     {
         $sql = "DELETE FROM `products` WHERE id=$id";
-        $st = $this->conn->prepare($sql);
-        $st->execute();
+        DBConexion::execute($sql);
+    }
+
+    public function create(Product $product)
+    {
+
+        $sql = "INSERT INTO products
+        ( `name`, `description`, `price`, `category_id`, `created`)
+        VALUES (
+        '" . $product->getName() . "',
+        '" . $product->getDescription() . "',
+        '" . $product->getPrice() . "',
+        '" . $product->getCategory_id() . "',
+        '" . $product->getCreated() . "'
+        ) ";
+
+        DBConexion::execute($sql);
+    }
+
+    public function update(Product $product)
+    {
+        $sql = " UPDATE `products` SET       
+        `name`= '" . $product->getName() . "',
+        `description`= '" . $product->getDescription() . "',
+        `price`= '" . $product->getPrice() . "',
+        `category_id` = '" . $product->getCategory_id() . "',
+        `created`= '" . $product->getCreated() . "' 
+        WHERE id='" . $product->getId() . "'";
+
+        DBConexion::execute($sql);
     }
 }

@@ -2,37 +2,37 @@
 
 class Product
 {
-    private string $name;
-    private string $description;
-    private float  $price;
-    private int $category_id;
-    private DateTime $created;
-    private string $modified;
+    public string $name;
+    public string $description;
+    public float  $price;
+    public int $category_id;
+    public int $id;
+    public string $created;
+    public string $modified;
 
-    public function __construct($id, $name, $setDesc, $price, $created, $modified)
+    public function __construct($category_id, $name, $setDesc, $price,
+     $created, $modified, $id = 0)
     {
-
-        $this->setCategory_id($id);
+        $this->setCategory_id($category_id);
         $this->setName($name);
         $this->setDescription($setDesc);
         $this->setPrice($price);
         $this->setCreated($created);
         $this->setModified($modified);
-
+        $this->setId($id);
     }
 
-    function getName(): string
+    function getName()
     {
         return $this->name;
     }
 
-    function setName(string $name): self
+    function setName(string $name)
     {
         $this->name = $name;
-        return $this;
     }
 
-    function getDescription(): string
+    function getDescription()
     {
         return $this->description;
     }
@@ -40,32 +40,29 @@ class Product
     function setDescription(string $description)
     {
         $this->description = $description;
-        return  $this->description;
     }
 
-    function getPrice(): float
+    function getPrice()
     {
         return $this->price;
     }
 
     function setPrice(float $price)
     {
-
         return $this->price = $price;
     }
 
-    function getCategory_id(): int
+    function getCategory_id()
     {
         return $this->category_id;
     }
 
     function setCategory_id(int $category_id)
     {
-
-        return $this->category_id = $category_id;
+        $this->category_id = $category_id;
     }
 
-    function getCreated(): DateTime
+    function getCreated()
     {
         return $this->created;
     }
@@ -73,19 +70,27 @@ class Product
 
     function setCreated($created)
     {
-
-        return $this->created = new DateTime($created);
+        $this->created = date('Y-m-d H:i:s');
     }
 
-
-    function getModified(): string
+    function getModified()
     {
         return $this->modified;
     }
 
     function setModified(string $modified)
     {
+        $this->modified = $modified;
+    }
 
-        return $this->modified = $modified;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 }

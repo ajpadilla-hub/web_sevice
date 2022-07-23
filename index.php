@@ -1,4 +1,5 @@
 <?php
-include 'products/read.php';
-$read = new Read();
+include 'products/Dao.php';
+$read = new ProductDao();
+
 $read->read();

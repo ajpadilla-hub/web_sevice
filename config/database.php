@@ -26,7 +26,7 @@ class DBConexion
         self::$instance = null;
     }
 
-    public static function execute($sql):PDOStatement
+    public static function execute($sql): PDOStatement
     {
         $st = self::$instance->prepare($sql);
         $st->execute();
